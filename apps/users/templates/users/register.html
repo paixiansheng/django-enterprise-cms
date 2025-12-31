@@ -1,0 +1,141 @@
+<!-- 加载自定义过滤器（路径：templatetags目录下的custom_filters.py） -->
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+{% load custom_filters %}
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册 - 我的项目</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.min.css">
+    <style>
+        .register-container {
+            margin-top: 80px;
+            max-width: 450px;
+            padding: 20px;
+            border: 1px solid #e6e6e6;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .error-msg {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="register-container mx-auto">
+            <h3 class="text-center mb-4">用户注册</h3>
+            <!-- 消息提示 -->
+            {% if messages %}
+                {% for msg in messages %}
+                    <div class="alert {% if msg.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}" role="alert">
+                        {{ msg }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- 注册表单 -->
+            <form method="post" action="{% url 'users:register' %}">
+                {% csrf_token %}
+
+                <!-- 用户名 -->
+                <div class="mb-3">
+                    <label for="{{ form.username.id_for_label }}" class="form-label">
+                        {{ form.username.label }}
+                    </label>
+                    {{ form.username|add_class:"form-control" }}
+                    {% if form.username.errors %}
+                        <div class="error-msg">
+                            {% for err in form.username.errors %}{{ err }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 手机号 -->
+                <div class="mb-3">
+                    <label for="{{ form.phone.id_for_label }}" class="form-label">
+                        {{ form.phone.label }}
+                    </label>
+                    {{ form.phone|add_class:"form-control" }}
+                    {% if form.phone.errors %}
+                        <div class="error-msg">
+                            {% for err in form.phone.errors %}{{ err }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 邮箱 -->
+                <div class="mb-3">
+                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                        {{ form.email.label }}
+                    </label>
+                    {{ form.email|add_class:"form-control" }}
+                    {% if form.email.errors %}
+                        <div class="error-msg">
+                            {% for err in form.email.errors %}{{ err }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 密码 -->
+                <div class="mb-3">
+                    <label for="{{ form.password.id_for_label }}" class="form-label">
+                        {{ form.password.label }}
+                    </label>
+                    {{ form.password|add_class:"form-control" }}
+                    {% if form.password.errors %}
+                        <div class="error-msg">
+                            {% for err in form.password.errors %}{{ err }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 确认密码 -->
+                <div class="mb-3">
+                    <label for="{{ form.password2.id_for_label }}" class="form-label">
+                        {{ form.password2.label }}
+                    </label>
+                    {{ form.password2|add_class:"form-control" }}
+                    {% if form.password2.errors %}
+                        <div class="error-msg">
+                            {% for err in form.password2.errors %}{{ err }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 验证码 -->
+                <div class="mb-3">
+                    <label for="{{ form.captcha.id_for_label }}" class="form-label">
+                        {{ form.captcha.label }}
+                    </label>
+                    <div class="d-flex gap-2">
+                        {{ form.captcha|add_class:"form-control" }}
+                    </div>
+                    {% if form.captcha.errors %}
+                        <div class="error-msg">
+                            {% for err in form.captcha.errors %}{{ err }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 全局错误 -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger mb-3">
+                        {% for err in form.non_field_errors %}{{ err }}{% endfor %}
+                    </div>
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary w-100">注册</button>
+                <div class="text-center mt-3">
+                    <a href="{% url 'users:login' %}" class="text-secondary">已有账号？立即登录</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/static/plugins/jquery/jquery.min.js"></script>
+    <script src="/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

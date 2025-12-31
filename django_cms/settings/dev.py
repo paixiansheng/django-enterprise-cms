@@ -49,6 +49,10 @@ INSTALLED_APPS = [
     #'haystack',        # 全文检索（后续文章搜索）
 
     # 预留自定义应用位置（后续添加apps/users、apps/rbac等，格式：'users'、'rbac'）
+    'users',  # 等价于apps.users，因已配置apps目录搜索路径
+    
+    # 第三方扩展应用（新增）
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -143,3 +147,6 @@ LANGUAGE_CODE = 'zh-hans'  # 中文简体
 TIME_ZONE = 'Asia/Shanghai'  # 上海时区
 USE_I18N = True
 USE_TZ = True
+
+# 指定自定义用户模型为默认用户模型
+AUTH_USER_MODEL = 'users.User'

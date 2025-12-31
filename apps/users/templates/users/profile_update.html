@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>修改个人资料 - 我的项目</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.min.css">
+    <style>
+        .update-container {
+            margin-top: 50px;
+            max-width: 600px;
+            padding: 20px;
+            border: 1px solid #e6e6e6;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .error-msg {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .preview-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #dee2e6;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="update-container mx-auto">
+            <h3 class="mb-4">修改个人资料</h3>
+            <!-- 消息提示 -->
+            {% if messages %}
+                {% for msg in messages %}
+                    <div class="alert {% if msg.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}" role="alert">
+                        {{ msg }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- 资料修改表单：支持文件上传（必须添加enctype属性） -->
+            <form method="post" action="{% url 'users:profile_update' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- 头像上传与预览 -->
+                <div class="mb-3">
+                    <label class="form-label">{{ form.avatar.label }}</label>
+                    <div>
+                        <!-- 现有头像预览 -->
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" alt="当前头像" class="preview-avatar">
+                        {% else %}
+                            <img src="/static/images/default_avatar.jpg" alt="默认头像" class="preview-avatar">
+                        {% endif %}
+                        <br>
+                        <!-- 头像上传框 -->
+                        {{ form.avatar|add_class:"form-control mt-2" }}
+                        {% if form.avatar.errors %}
+                            <div class="error-msg">
+                                {% for err in form.avatar.errors %}{{ err }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- 用户名 -->
+                <div class="mb-3">
+                    <label for="{{ form.username.id_for_label }}" class="form-label">
+                        {{ form.username.label }}
+                    </label>
+                    {{ form.username|add_class:"form-control" }}
+                    {% if form.username.errors %}
+                        <div class="error-msg">
+                            {% for err in form.username.errors %}{{ err }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 邮箱 -->
+                <div class="mb-3">
+                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                        {{ form.email.label }}
+                    </label>
+                    {{ form.email|add_class:"form-control" }}
+                    {% if form.email.errors %}
+                        <div class="error-msg">
+                            {% for err in form.email.errors %}{{ err }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 生日 -->
+                <div class="mb-3">
+                    <label for="{{ form.birthday.id_for_label }}" class="form-label">
+                        {{ form.birthday.label }}
+                    </label>
+                    {{ form.birthday|add_class:"form-control" }}
+                    {% if form.birthday.errors %}
+                        <div class="error-msg">
+                            {% for err in form.birthday.errors %}{{ err }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 性别 -->
+                <div class="mb-3">
+                    <label for="{{ form.gender.id_for_label }}" class="form-label">
+                        {{ form.gender.label }}
+                    </label>
+                    {{ form.gender|add_class:"form-select" }}
+                    {% if form.gender.errors %}
+                        <div class="error-msg">
+                            {% for err in form.gender.errors %}{{ err }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 手机号（只读，不可修改） -->
+                <div class="mb-3">
+                    <label for="{{ form.phone.id_for_label }}" class="form-label">
+                        {{ form.phone.label }}
+                    </label>
+                    {{ form.phone|add_class:"form-control" }}
+                    <div class="form-text text-muted">手机号不可修改</div>
+                </div>
+
+                <!-- 全局错误 -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger mb-3">
+                        {% for err in form.non_field_errors %}{{ err }}{% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">保存修改</button>
+                    <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary">取消</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/static/plugins/jquery/jquery.min.js"></script>
+    <script src="/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- 头像上传预览（可选，实时预览未上传的图片） -->
+    <script>
+        // 获取头像上传框
+        const avatarInput = document.querySelector('#{{ form.avatar.id_for_label }}');
+        const previewImg = document.querySelector('.preview-avatar');
+        // 监听文件选择事件
+        avatarInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>

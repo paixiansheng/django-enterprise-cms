@@ -15,9 +15,23 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+
 from django.contrib import admin
-from django.urls import path
+# 导入include模块（用于分发应用路由）
+from django.urls import path, include
+# 导入静态资源和媒体文件配置（可选，确保头像、静态资源可访问）
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    # Django后台管理路由
+    path('admin/', admin.site.urls),
+    # 验证码路由（django-simple-captcha）
+    path('captcha/', include('captcha.urls')),
+    # 9.3 分发users应用路由：所有以 /users/ 开头的URL，转发到users应用的urls.py
+    path('users/', include('users.urls')),
 ]
+
+# 开发环境下：配置媒体文件访问路由（使浏览器能访问上传的头像等文件）
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

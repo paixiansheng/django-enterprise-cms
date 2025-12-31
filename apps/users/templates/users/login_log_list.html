@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>登录日志 - 后台管理</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.min.css">
+    <style>
+        .admin-container {
+            margin-top: 30px;
+            max-width: 1200px;
+            padding: 20px;
+            border: 1px solid #e6e6e6;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .search-form {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="admin-container mx-auto">
+            <h3 class="mb-4">登录日志管理</h3>
+
+            <!-- 查询表单 -->
+            <div class="search-form">
+                <form method="get" action="{% url 'users:login_log_list' %}">
+                    <div class="row g-3">
+                        <div class="col-md-2">
+                            <label class="form-label">用户名</label>
+                            <input type="text" name="username" class="form-control" value="{{ username }}" placeholder="请输入用户名">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">登录状态</label>
+                            <select name="status" class="form-select">
+                                <option value="" {% if status == "" %}selected{% endif %}>全部</option>
+                                <option value="True" {% if status == "True" %}selected{% endif %}>成功</option>
+                                <option value="False" {% if status == "False" %}selected{% endif %}>失败</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">开始时间</label>
+                            <input type="date" name="start_time" class="form-control" value="{{ start_time }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">结束时间</label>
+                            <input type="date" name="end_time" class="form-control" value="{{ end_time }}">
+                        </div>
+                        <div class="col-md-2 align-self-end">
+                            <button type="submit" class="btn btn-primary w-100">查询</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 日志列表 -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>用户名</th>
+                            <th>登录IP</th>
+                            <th>登录设备</th>
+                            <th>登录状态</th>
+                            <th>登录时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in login_logs %}
+                            <tr>
+                                <td>{{ log.id }}</td>
+                                <td>{{ log.user.username }}</td>
+                                <td>{{ log.login_ip }}</td>
+                                <td>{{ log.device }}</td>
+                                <td>
+                                    {% if log.status %}
+                                        <span class="text-success">成功</span>
+                                    {% else %}
+                                        <span class="text-danger">失败</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ log.login_time|date:"Y-m-d H:i:s" }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">暂无登录日志数据</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/plugins/jquery/jquery.min.js"></script>
+    <script src="/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

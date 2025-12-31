@@ -1,0 +1,119 @@
+<!-- 继承全局基础模板（若未创建，可先直接编写完整模板，后续优化继承） -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>用户登录 - 我的项目</title>
+    <!-- 引入Bootstrap静态资源（全局static/plugins目录下，需先下载Bootstrap放入该目录） -->
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.min.css">
+    <style>
+        .login-container {
+            margin-top: 100px;
+            max-width: 400px;
+            padding: 20px;
+            border: 1px solid #e6e6e6;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .error-msg {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-container mx-auto">
+            <h3 class="text-center mb-4">用户登录</h3>
+            <!-- Django消息框架：展示登录成功/失败提示 -->
+            {% if messages %}
+                {% for msg in messages %}
+                    <div class="alert {% if msg.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}" role="alert">
+                        {{ msg }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- 登录表单：POST提交，支持文件上传（enctype可省略，此处预留） -->
+            <form method="post" action="{% url 'users:login' %}">
+                {% csrf_token %}  <!-- Django跨站请求伪造保护必备 -->
+
+                <!-- 渲染账号输入框 -->
+                <div class="mb-3">
+                    <label for="{{ form.account.id_for_label }}" class="form-label">
+                        {{ form.account.label }}
+                    </label>
+                    {{ form.account|add_class:"form-control" }}  <!-- 渲染输入框并添加Bootstrap样式 -->
+                    <!-- 账号字段错误提示 -->
+                    {% if form.account.errors %}
+                        <div class="error-msg">
+                            {% for err in form.account.errors %}
+                                {{ err }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 渲染密码输入框 -->
+                <div class="mb-3">
+                    <label for="{{ form.password.id_for_label }}" class="form-label">
+                        {{ form.password.label }}
+                    </label>
+                    {{ form.password|add_class:"form-control" }}
+                    <!-- 密码字段错误提示 -->
+                    {% if form.password.errors %}
+                        <div class="error-msg">
+                            {% for err in form.password.errors %}
+                                {{ err }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 渲染图形验证码 -->
+                <div class="mb-3">
+                    <label for="{{ form.captcha.id_for_label }}" class="form-label">
+                        {{ form.captcha.label }}
+                    </label>
+                    <div class="d-flex gap-2">
+                        {{ form.captcha|add_class:"form-control" }}
+                        <!-- 验证码图片自动渲染（依赖django-simple-captcha） -->
+                    </div>
+                    <!-- 验证码错误提示 -->
+                    {% if form.captcha.errors %}
+                        <div class="error-msg">
+                            {% for err in form.captcha.errors %}
+                                {{ err }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- 表单全局错误提示（如密码错误、账号不存在） -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger mb-3">
+                        {% for err in form.non_field_errors %}
+                            {{ err }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary w-100">登录</button>
+                <div class="text-center mt-3">
+                    <a href="{% url 'users:register' %}" class="text-secondary">还没有账号？立即注册</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 引入jQuery和Bootstrap JS -->
+    <script src="/static/plugins/jquery/jquery.min.js"></script>
+    <script src="/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- 自定义过滤器：为表单字段添加class（需在templatetags中注册，临时简化：直接在表单渲染时添加） -->
+    {% comment %}
+    若add_class过滤器报错，可替换为：
+    {{ form.account.attrs.class="form-control" }}
+    {% endcomment %}
+</body>
+</html>

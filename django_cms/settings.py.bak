@@ -10,11 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-import os
 from pathlib import Path
 
-# 4. 静态资源配置：指定本地静态资源目录（关联之前创建的static目录）
-BASE_DIR = Path(__file__).resolve().parent.parent.parent  # 修正后：指向django-enterprise-cms根目录
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -25,30 +25,18 @@ SECRET_KEY = "django-insecure-e&b3ngit6o+564@ds3_tx^r9goh@ig@&1qfi!uf-1ujm-fy22(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# 2. 允许访问的主机：开发环境宽松配置
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']  # 仅允许本地访问，足够开发使
+ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    # Django默认内置应用
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
-    # 项目核心依赖应用（提前注册，后续开发直接使用）
-    'rest_framework',  # DRF（接口开发）
-    'django_filters',  # 数据筛选（后续文章/用户列表筛选）
-    'corsheaders',     # 跨域处理（后续DRF接口跨域）
-    'captcha',         # 图形验证码（后续用户登录/注册）
-    'tinymce',         # 富文本编辑（后续文章编辑）
-    #'haystack',        # 全文检索（后续文章搜索）
-
-    # 预留自定义应用位置（后续添加apps/users、apps/rbac等，格式：'users'、'rbac'）
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
 ]
 
 MIDDLEWARE = [
@@ -85,11 +73,10 @@ WSGI_APPLICATION = "django_cms.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# 3. 数据库配置：开发环境使用SQLite（无需额外安装，便捷演示）
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',  # 本地SQLite数据库文件，自动生成
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -113,33 +100,24 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Internationalization
+# https://docs.djangoproject.com/en/4.2/topics/i18n/
+
+LANGUAGE_CODE = "en-us"
+
+TIME_ZONE = "UTC"
+
+USE_I18N = True
+
+USE_TZ = True
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/4.2/howto/static-files/
+
+STATIC_URL = "static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-
-
-# 静态资源URL
-STATIC_URL = '/static/'
-# 本地静态资源存放目录（关联项目根目录的static文件夹）
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-
-# 5. 媒体文件配置（用户上传文件，关联之前创建的media目录）
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# 6. 应用注册：添加apps目录的搜索路径（后续业务应用放在apps目录，需让Django识别）
-# 找到INSTALLED_APPS配置，在顶部添加以下代码
-import sys
-# 将apps目录添加到Python搜索路径
-sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
-
-# 7. 语言与时区：配置为中文+上海时区（开发更友好）
-LANGUAGE_CODE = 'zh-hans'  # 中文简体
-TIME_ZONE = 'Asia/Shanghai'  # 上海时区
-USE_I18N = True
-USE_TZ = True

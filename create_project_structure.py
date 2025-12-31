@@ -38,8 +38,9 @@ PROJECT_STRUCTURE = [
     (f"{PROJECT_ROOT}/static/js", True, ""),
     (f"{PROJECT_ROOT}/static/plugins", True, ""),
     # 用户上传文件目录
-    (f"{PROJECT_ROOT}/media", True, "")
+    (f"{PROJECT_ROOT}/media", True, ""),
 ]
+
 
 def create_project_structure():
     """
@@ -66,6 +67,7 @@ def create_project_structure():
                     print(f"ℹ️ 文件已存在，跳过创建：{path}")
         except Exception as e:
             print(f"❌ 创建失败 {path}：{str(e)}")
+
 
 if __name__ == "__main__":
     print("开始自动创建Django项目目录结构...\n")

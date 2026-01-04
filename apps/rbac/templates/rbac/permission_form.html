@@ -1,0 +1,60 @@
+<!-- apps/rbac/templates/rbac/permission_form.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if form.instance.id %}编辑权限{% else %}新增权限{% endif %}</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.min.css">
+    <style> .admin-container { margin-top: 30px; max-width: 600px; } </style>
+</head>
+<body>
+    <div class="container admin-container mx-auto">
+        <h3 class="mb-4">{% if form.instance.id %}编辑权限{% else %}新增权限{% endif %}</h3>
+
+        <form method="post">
+            {% csrf_token %}
+            <!-- 权限名称 -->
+            <div class="mb-3">
+                <label for="{{ form.permission_name.id_for_label }}" class="form-label">权限名称</label>
+                {{ form.permission_name|add_class:"form-control" }}
+                {% if form.permission_name.errors %}
+                    <div class="text-danger mt-1">{% for err in form.permission_name.errors %}{{ err }}{% endfor %}</div>
+                {% endif %}
+            </div>
+            <!-- 权限标识 -->
+            <div class="mb-3">
+                <label for="{{ form.permission_code.id_for_label }}" class="form-label">权限标识（英文/下划线）</label>
+                {{ form.permission_code|add_class:"form-control" }}
+                {% if form.permission_code.errors %}
+                    <div class="text-danger mt-1">{% for err in form.permission_code.errors %}{{ err }}{% endfor %}</div>
+                {% endif %}
+                <div class="form-text">示例：user_view、user_status_change</div>
+            </div>
+            <!-- 关联路由 -->
+            <div class="mb-3">
+                <label for="{{ form.url_path.id_for_label }}" class="form-label">关联路由</label>
+                {{ form.url_path|add_class:"form-control" }}
+                {% if form.url_path.errors %}
+                    <div class="text-danger mt-1">{% for err in form.url_path.errors %}{{ err }}{% endfor %}</div>
+                {% endif %}
+                <div class="form-text">示例：/users/login/logs/、/rbac/role/list/</div>
+            </div>
+            <!-- 权限描述 -->
+            <div class="mb-3">
+                <label for="{{ form.description.id_for_label }}" class="form-label">权限描述</label>
+                {{ form.description|add_class:"form-control"|attr:"rows:3" }}
+                {% if form.description.errors %}
+                    <div class="text-danger mt-1">{% for err in form.description.errors %}{{ err }}{% endfor %}</div>
+                {% endif %}
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <a href="{% url 'rbac:permission_list' %}" class="btn btn-outline-secondary">取消</a>
+            </div>
+        </form>
+    </div>
+    <script src="/static/plugins/jquery/jquery.min.js"></script>
+    <script src="/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -30,6 +30,7 @@ urlpatterns = [
     path('captcha/', include('captcha.urls')),
     # 9.3 分发users应用路由：所有以 /users/ 开头的URL，转发到users应用的urls.py
     path('users/', include('users.urls')),
+    path('rbac/', include('rbac.urls')),  # 新增：分发RBAC应用路由
 ]
 
 # 开发环境下：配置媒体文件访问路由（使浏览器能访问上传的头像等文件）

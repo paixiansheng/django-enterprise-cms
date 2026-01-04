@@ -1,0 +1,67 @@
+<!-- apps/rbac/templates/rbac/role_list.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>角色管理 - RBAC权限系统</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.min.css">
+    <style>
+        .admin-container { margin-top: 30px; max-width: 1000px; }
+        .operation-btn { padding: 2px 8px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container admin-container mx-auto">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>角色管理</h3>
+            <a href="{% url 'rbac:role_create' %}" class="btn btn-primary">新增角色</a>
+        </div>
+
+        <!-- 消息提示 -->
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="alert {% if msg.tags == 'success' %}alert-success{% else %}alert-danger{% endif %}" role="alert">
+                    {{ msg }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- 角色列表 -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>角色名称</th>
+                        <th>描述</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for role in role_list %}
+                        <tr>
+                            <td>{{ role.id }}</td>
+                            <td>{{ role.role_name }}</td>
+                            <td>{{ role.description|default:"无描述" }}</td>
+                            <td>{{ role.create_time|date:"Y-m-d H:i:s" }}</td>
+                            <td>
+                                <a href="{% url 'rbac:role_update' role.id %}" class="btn btn-outline-primary operation-btn">编辑</a>
+                                <a href="{% url 'rbac:role_delete' role.id %}" class="btn btn-outline-danger operation-btn">删除</a>
+                                <a href="{% url 'rbac:role_permission_assign' role.id %}" class="btn btn-outline-secondary operation-btn">分配权限</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">暂无角色数据</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="/static/plugins/jquery/jquery.min.js"></script>
+    <script src="/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

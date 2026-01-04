@@ -1,0 +1,46 @@
+<!-- apps/rbac/templates/rbac/role_form.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if form.instance.id %}编辑角色{% else %}新增角色{% endif %}</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.min.css">
+    <style> .admin-container { margin-top: 30px; max-width: 600px; } </style>
+</head>
+<body>
+    <div class="container admin-container mx-auto">
+        <h3 class="mb-4">{% if form.instance.id %}编辑角色{% else %}新增角色{% endif %}</h3>
+
+        <form method="post">
+            {% csrf_token %}
+            <!-- 角色名称 -->
+            <div class="mb-3">
+                <label for="{{ form.role_name.id_for_label }}" class="form-label">角色名称</label>
+                {{ form.role_name|add_class:"form-control" }}
+                {% if form.role_name.errors %}
+                    <div class="text-danger mt-1">
+                        {% for err in form.role_name.errors %}{{ err }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <!-- 角色描述 -->
+            <div class="mb-3">
+                <label for="{{ form.description.id_for_label }}" class="form-label">角色描述</label>
+                {{ form.description|add_class:"form-control"|attr:"rows:3" }}
+                {% if form.description.errors %}
+                    <div class="text-danger mt-1">
+                        {% for err in form.description.errors %}{{ err }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <a href="{% url 'rbac:role_list' %}" class="btn btn-outline-secondary">取消</a>
+            </div>
+        </form>
+    </div>
+    <script src="/static/plugins/jquery/jquery.min.js"></script>
+    <script src="/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

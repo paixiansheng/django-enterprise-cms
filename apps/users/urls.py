@@ -1,10 +1,12 @@
 # 导入Django路由核心模块
-from django.urls import path
+from django.urls import path, include
 # 导入当前应用的所有视图（已编写的类视图）
 from . import views
+from rest_framework.routers import DefaultRouter
 
 # 配置应用命名空间（关键：避免不同应用路由名称冲突）
 app_name = 'users'
+router.register(r'api/users', views.UserViewSet)  # 注册用户接口路由
 
 # 路由列表：配置URL路径与视图的映射关系
 urlpatterns = [
@@ -31,4 +33,6 @@ urlpatterns = [
     path('login/logs/', views.LoginLogQueryView.as_view(), name='login_log_list'),
     # 用户状态管理（禁用/启用）：URL路径 /users/status/update/用户ID/，映射UserStatusUpdateView，路由名称 user_status_update
     path('status/update/<int:user_id>/', views.UserStatusUpdateView.as_view(), name='user_status_update'),
+
+    path('', include(router.urls)),  # 包含DRF路由
 ]

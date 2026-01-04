@@ -30,6 +30,13 @@ class User(AbstractUser):
         verbose_name='创建时间',
         default=timezone.now
     )
+    roles = models.ManyToManyField(
+        to='rbac.Role',  # 关联rbac应用的Role模型
+        verbose_name='用户角色',
+        blank=True,
+        related_name='user_roles',  # 反向关联名称，便于通过角色查询关联的用户
+        help_text='请为该用户分配对应的角色，可多选'
+    )    
 
     # 重新指定用户名字段（可选，默认是username，此处明确指定，便于后续维护）
     USERNAME_FIELD = 'username'

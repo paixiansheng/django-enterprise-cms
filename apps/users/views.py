@@ -9,6 +9,7 @@ from .forms import UserRegisterForm, UserLoginForm
 from .models import User, LoginLog
 from django.utils import timezone
 import socket
+from apps.rbac.permissions import RbacApiPermission
 
 # 辅助函数：获取用户登录IP
 def get_client_ip(request):
@@ -262,3 +263,18 @@ class UserStatusUpdateView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
         # 跳转用户列表页
         return redirect('users:user_list')
+    
+# 定义用户序列化器
+class UserSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'phone', 'email', 'is_active']
+
+# 定义用户接口视图集
+class UserViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    # 指定该接口所需的权限标识（与RBAC权限模型中的permission_code一致）
+    required_permission_code = 'user_view'
+    # 若未配置DRF全局权限类，可在此处单独指定
+    # permission_classes = [RbacApiPermission]

@@ -50,9 +50,11 @@ INSTALLED_APPS = [
 
     # 预留自定义应用位置（后续添加apps/users、apps/rbac等，格式：'users'、'rbac'）
     'users',  # 等价于apps.users，因已配置apps目录搜索路径
+    'apps.rbac',   # RBAC权限模块应用（新增）
     
     # 第三方扩展应用（新增）
     'django_extensions',
+    'rest_framework',  # 新增：注册DRF应用
 ]
 
 MIDDLEWARE = [
@@ -63,6 +65,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'apps.rbac.middleware.RbacPagePermissionMiddleware',  # 新增：RBAC页面级权限中间件    
 ]
 
 ROOT_URLCONF = "django_cms.urls"
@@ -150,3 +153,16 @@ USE_TZ = True
 
 # 指定自定义用户模型为默认用户模型
 AUTH_USER_MODEL = 'users.User'
+
+# DRF全局配置
+REST_FRAMEWORK = {
+    # 默认认证类（会话认证，适用于前后端不分离；前后端分离可添加JWT认证）
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    # 默认权限类（全局使用RBAC接口权限类）
+    'DEFAULT_PERMISSION_CLASSES': [
+        'apps.rbac.permissions.RbacApiPermission',
+    ],
+}
